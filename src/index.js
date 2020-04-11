@@ -1,5 +1,5 @@
-/* import { } from './displayController'; */
 import format from 'date-fns/format';
+import { } from './view';
 
 
 /* Track which Project is selected */
@@ -104,7 +104,6 @@ function addListeners () {
     for (let desc of descriptions) {
         desc.addEventListener('click', expandToDo);
     }
-
 }
 
 function addUpdateListeners() {
@@ -152,8 +151,10 @@ function updateToDo (event) {
 
     toDoArr.splice(prevToDoIndex, 1, updatedToDo);
 
+    clearUpdatePanel();
     toggleUpdateVisibility();
     resetAll();
+    
 }
 
 /* Cancel update */
