@@ -10,12 +10,18 @@ const model = {
     toDoArr: [],
     nextid: -1
 }
+console.log(model);
 
 /* To Do Factory */
 
 function ToDoFactory (description, dueDate, priority, project = '') {
 
+    const model = JSON.parse(localStorage.model);
+    console.log(model.nextid);
     model.nextid++;
+    console.log(model.nextid);
+    localStorage.model = JSON.stringify(model);
+
     return {
         id: model.nextid,
         description,
@@ -25,14 +31,29 @@ function ToDoFactory (description, dueDate, priority, project = '') {
     }
 }
 
-/* Generate examples */
+/* Initialise Local Storage */
+function checkModel () {
+    console.log(model);
+    if (localStorage.model) {
+        return;
+    } else {
+        localStorage.model = JSON.stringify(model);
 
-exampleGen(model.toDoArr);
+        exampleGen(model.toDoArr);
+
+        localStorage.model = JSON.stringify(model);
+    }
+}
+console.log(model);
+checkModel();
+console.log(model);
 
 /* Add new To Do */
 
 function generateToDo (event) {
     event.preventDefault();
+
+    const model = JSON.parse(localStorage.model);
 
     const description = document.getElementById('todo-desc').value;
     const priority = document.getElementById('selectbasic').value;
@@ -42,6 +63,7 @@ function generateToDo (event) {
 
     const newToDo = ToDoFactory(description, dueDate, priority, project);
     model.toDoArr.push(newToDo);
+    localStorage.model = JSON.stringify(model);
     
     resetAll();
 }
@@ -51,22 +73,24 @@ function generateToDo (event) {
 function generateProject (event) {
     event.preventDefault()
     const newProject = document.getElementById('textinput').value;
-    model.projectsArr.push(newProject);
+    localStorage.projectsArr.push(newProject);
     resetAll();
 }
 
 /* Update Project Tracker */
 
 function updateProjectTracker (event) {
+    const model = JSON.parse(localStorage.model);
     if (event.target.innerHTML === 'All') {
         model.projectTracker = '';
     } else {
         model.projectTracker = event.target.innerHTML;
     }
 
+    localStorage.model = JSON.stringify(model);
     resetAll();
 }
 
 resetAll();
 
-export { model, generateProject, generateToDo, updateProjectTracker, ToDoFactory };
+export { model, checkModel, generateProject, generateToDo, updateProjectTracker, ToDoFactory };

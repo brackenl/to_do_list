@@ -1,10 +1,10 @@
-import { model, generateProject, generateToDo, updateProjectTracker, ToDoFactory } from './index';
+import { model, checkModel, generateProject, generateToDo, updateProjectTracker, ToDoFactory } from './index';
 import format from 'date-fns/format';
 
 /* Generate list of projects */
 
 function listProjects () {
-    
+    const model = JSON.parse(localStorage.model);
     const projectsContainer = document.querySelector('.projects-container');
     for (let i = 0; i < model.projectsArr.length; i++) {
         projectsContainer.insertAdjacentHTML('beforeend', `<div class="project"><a href="#">${model.projectsArr[i]}</a></div>`)
@@ -14,6 +14,7 @@ function listProjects () {
 /* Generate list of To Dos */
 
 function listToDos () {
+    const model = JSON.parse(localStorage.model);
     const toDosContainer = document.querySelector('.todo-container');
     let listOfToDos;
 
@@ -87,10 +88,10 @@ function addUpdateListeners() {
 /* Expand Description */
 
 function expandToDo (event) {
+    const model = JSON.parse(localStorage.model);
     const updatePanel = document.querySelector('.expanded-description');
     const relIndex = model.toDoArr.findIndex(element => element.id == event.target.id)
     const relToDo = model.toDoArr[relIndex];
-    console.log(relToDo);
     updatePanel.insertAdjacentHTML('beforeend', `
     <form class="update-form">
         <fieldset>
@@ -170,6 +171,7 @@ function completeToDo (event) {
 
 function updateToDo (event) {
     event.preventDefault();
+    const model =JSON.parse(localStorage.model);
 
     const description = document.getElementById('update-todo-desc').value;
     const priority = document.getElementById('update-todo-priority').value;
@@ -182,6 +184,8 @@ function updateToDo (event) {
 
     model.toDoArr.splice(prevToDoIndex, 1, updatedToDo);
 
+    localStorage.model = JSON.stringify(model);
+
     clearUpdatePanel();
     toggleUpdateVisibility();
     resetAll();
@@ -192,10 +196,13 @@ function updateToDo (event) {
 
 function deleteToDo (event) {
     event.preventDefault();
+    const model = JSON.parse(localStorage.model);
 
     const prevToDoIndex = model.toDoArr.findIndex(element => element.id == event.target.className);
 
     model.toDoArr.splice(prevToDoIndex, 1);
+
+    localStorage.model = JSON.stringify(model);
 
     clearUpdatePanel();
     toggleUpdateVisibility();
@@ -227,6 +234,7 @@ function clearUpdatePanel() {
 /* Reset everything */
 
 function resetAll () {
+    checkModel();
     clearTable();
     listProjects();
     listToDos();
